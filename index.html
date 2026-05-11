@@ -408,14 +408,7 @@ function renderMain(stock) {
   const tvTicker = toTVTicker(stock.ticker);
 
   const statsHtml = stock.ticker ? `
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-label">Current Price</div><div class="stat-value loading" id="s-price">loading...</div></div>
-      <div class="stat-card"><div class="stat-label">Change (1D)</div><div class="stat-value loading" id="s-change">loading...</div></div>
-      <div class="stat-card"><div class="stat-label">Market Cap</div><div class="stat-value loading" id="s-mktcap">loading...</div></div>
-      <div class="stat-card"><div class="stat-label">P/E Ratio</div><div class="stat-value loading" id="s-pe">loading...</div></div>
-      <div class="stat-card"><div class="stat-label">52W High</div><div class="stat-value loading" id="s-high">loading...</div></div>
-      <div class="stat-card"><div class="stat-label">52W Low</div><div class="stat-value loading" id="s-low">loading...</div></div>
-    </div>` : '';
+    <div id="tv-symbol-info" style="margin-bottom:18px;border-radius:6px;overflow:hidden;"></div>` : '';
 
   const chartHtml = tvTicker ? `
     <div class="chart-wrap">
@@ -469,11 +462,28 @@ function renderMain(stock) {
     </div>`;
 
   if (tvTicker) loadTVChart(tvTicker);
-  if (stock.ticker) fetchStats(stock.ticker);
 }
 
 // ── TradingView 위젯 ───────────────────────────────────────────────────
 function loadTVChart(tvTicker) {
+  // 심볼 정보 위젯 (가격, 시총, PER 등)
+  const infoContainer = document.getElementById('tv-symbol-info');
+  if (infoContainer) {
+    infoContainer.innerHTML = '';
+    const s1 = document.createElement('script');
+    s1.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js';
+    s1.async = true;
+    s1.innerHTML = JSON.stringify({
+      symbol: tvTicker,
+      width: '100%',
+      locale: 'kr',
+      colorTheme: 'dark',
+      isTransparent: false,
+    });
+    infoContainer.appendChild(s1);
+  }
+
+  // 차트 위젯
   const container = document.getElementById('tv-chart');
   if (!container) return;
   container.innerHTML = '';
@@ -507,61 +517,6 @@ function changePeriod(p) {
   }
 }
 
-// ── 가격 데이터 (allorigins CORS 프록시) ─────────────────────────────
-async function fetchStats(ticker) {
-  const fmt    = (n, d=2) => n != null ? Number(n).toFixed(d) : '—';
-  const fmtMkt = n => {
-    if (!n) return '—';
-    if (n>=1e12) return (n/1e12).toFixed(2)+'T';
-    if (n>=1e9)  return (n/1e9).toFixed(1)+'B';
-    if (n>=1e6)  return (n/1e6).toFixed(1)+'M';
-    return String(n);
-  };
-  const setEl = (id, html, cls='') => {
-    const el = document.getElementById(id);
-    if (el) { el.innerHTML = html; el.className = `stat-value ${cls}`; }
-  };
-
-  const yahooUrl = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(ticker)}?modules=price,summaryDetail`;
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooUrl)}`;
-
-  try {
-    const res = await fetch(proxyUrl);
-    if (!res.ok) throw new Error('proxy fail');
-    const outer = await res.json();
-    const data  = JSON.parse(outer.contents);
-    const result  = data?.quoteSummary?.result?.[0];
-    if (!result) throw new Error('no result');
-    const price   = result.price || {};
-    const summary = result.summaryDetail || {};
-
-    const raw = (obj, key) => { const v = obj[key]; return v && typeof v==='object' ? v.raw : v; };
-
-    const cur    = raw(price, 'regularMarketPrice');
-    const change = raw(price, 'regularMarketChangePercent');
-    const mktcap = raw(price, 'marketCap');
-    const pe     = raw(summary, 'trailingPE');
-    const high52 = raw(summary, 'fiftyTwoWeekHigh');
-    const low52  = raw(summary, 'fiftyTwoWeekLow');
-    const currency = price.currency || '';
-
-    setEl('s-price', cur!=null ? `${fmt(cur)} <span style="font-size:10px;color:var(--text3)">${currency}</span>` : '—');
-    if (change!=null) {
-      const pct = (change*100).toFixed(2);
-      setEl('s-change', `${change>=0?'+':''}${pct}%`, change>=0?'pos':'neg');
-    } else setEl('s-change','—');
-    setEl('s-mktcap', fmtMkt(mktcap));
-    setEl('s-pe',    pe!=null     ? fmt(pe,1)+'x' : '—');
-    setEl('s-high',  high52!=null ? fmt(high52)   : '—');
-    setEl('s-low',   low52!=null  ? fmt(low52)    : '—');
-
-  } catch(e) {
-    ['s-price','s-change','s-mktcap','s-pe','s-high','s-low'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) { el.textContent = '—'; el.className = 'stat-value'; el.style.color='var(--text3)'; }
-    });
-  }
-}
 
 // ── 섹터 추가 모달 ────────────────────────────────────────────────────
 function openModal()  { document.getElementById('modal').classList.add('open'); }
