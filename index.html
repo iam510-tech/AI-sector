@@ -8,238 +8,116 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --bg2: #111118;
-    --bg3: #1a1a24;
-    --border: rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.12);
-    --text: #e8e8f0;
-    --text2: #8888a0;
-    --text3: #555568;
-    --accent: #7c6af5;
-    --accent2: #5a4fd4;
-    --green: #3ecf8e;
-    --red: #f04040;
-    --amber: #f5a623;
-    --blue: #4a9eff;
-    --mono: 'IBM Plex Mono', monospace;
-    --sans: 'IBM Plex Sans KR', sans-serif;
+    --bg:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;
+    --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+    --text:#e8e8f0;--text2:#8888a0;--text3:#555568;
+    --accent:#7c6af5;--accent2:#5a4fd4;
+    --green:#3ecf8e;--red:#f04040;
+    --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans KR',sans-serif;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; overflow-x: hidden; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
 
-  .header {
-    border-bottom: 1px solid var(--border);
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    position: sticky;
-    top: 0;
-    background: rgba(10,10,15,0.95);
-    backdrop-filter: blur(12px);
-    z-index: 100;
-  }
-  .header-logo { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--accent); letter-spacing: 0.08em; }
-  .header-sep { width: 1px; height: 20px; background: var(--border2); }
-  .header-sub { font-size: 12px; color: var(--text3); font-family: var(--mono); }
-  .btn-add {
-    margin-left: auto;
-    background: transparent;
-    border: 1px solid var(--border2);
-    color: var(--text2);
-    font-family: var(--mono);
-    font-size: 11px;
-    padding: 6px 14px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.15s;
-    letter-spacing: 0.04em;
-  }
-  .btn-add:hover { border-color: var(--accent); color: var(--accent); }
+  .header{border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;background:rgba(10,10,15,0.96);backdrop-filter:blur(12px);z-index:100}
+  .logo{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent);letter-spacing:.08em}
+  .sep{width:1px;height:20px;background:var(--border2)}
+  .sub{font-size:12px;color:var(--text3);font-family:var(--mono)}
+  .btn-add{margin-left:auto;background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:11px;padding:6px 14px;border-radius:4px;cursor:pointer;transition:all .15s}
+  .btn-add:hover{border-color:var(--accent);color:var(--accent)}
 
-  .layout { display: flex; height: calc(100vh - 53px); }
+  .layout{display:flex;height:calc(100vh - 53px)}
 
-  /* Sidebar */
-  .sidebar { width: 256px; min-width: 256px; border-right: 1px solid var(--border); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--bg3) transparent; }
-  .sector-group { border-bottom: 1px solid var(--border); }
-  .sector-header {
-    padding: 11px 16px;
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    color: var(--text3);
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    user-select: none;
-    transition: color 0.15s;
-  }
-  .sector-header:hover { color: var(--text2); }
-  .sector-header.active { color: var(--accent); }
-  .sector-count { font-size: 10px; padding: 2px 7px; border-radius: 10px; background: var(--bg3); color: var(--text3); }
-  .sector-header.active .sector-count { background: rgba(124,106,245,0.15); color: var(--accent); }
+  .sidebar{width:256px;min-width:256px;border-right:1px solid var(--border);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
+  .sector-group{border-bottom:1px solid var(--border)}
+  .sector-header{padding:11px 16px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:color .15s}
+  .sector-header:hover{color:var(--text2)}
+  .sector-header.open{color:var(--accent)}
+  .sector-count{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--bg3);color:var(--text3)}
+  .sector-header.open .sector-count{background:rgba(124,106,245,.15);color:var(--accent)}
+  .tier-label{padding:8px 16px 3px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;display:flex;align-items:center;gap:6px}
+  .tdot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+  .thint{font-size:9px;color:var(--text3)}
+  .stock-item{padding:7px 16px 7px 24px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .1s;border-left:2px solid transparent}
+  .stock-item:hover{background:var(--bg3)}
+  .stock-item.active{background:rgba(124,106,245,.1);border-left-color:var(--accent)}
+  .sname{font-size:13px;color:var(--text)}
+  .sticker{font-family:var(--mono);font-size:10px;color:var(--text3)}
+  .noticker{font-size:9px;color:var(--text3);font-style:italic}
 
-  .tier-label {
-    padding: 8px 16px 3px 16px;
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    color: var(--text3);
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .tier-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-  .tier-hint { font-size: 9px; color: var(--text3); margin-left: 2px; }
+  .main{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
+  .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;color:var(--text3)}
+  .empty-icon{font-size:28px;opacity:.2}
+  .empty-hint{font-family:var(--mono);font-size:11px;letter-spacing:.06em}
+  .sector-note{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:13px 18px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8;max-width:540px}
 
-  .stock-item {
-    padding: 7px 16px 7px 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: background 0.1s;
-    border-left: 2px solid transparent;
-  }
-  .stock-item:hover { background: var(--bg3); }
-  .stock-item.active { background: rgba(124,106,245,0.1); border-left-color: var(--accent); }
-  .stock-name { font-size: 13px; color: var(--text); }
-  .stock-ticker { font-family: var(--mono); font-size: 10px; color: var(--text3); }
-  .no-ticker { font-size: 9px; color: var(--text3); font-style: italic; }
+  .detail{padding:28px 32px;max-width:960px}
+  .dname{font-size:22px;font-weight:500;margin-bottom:6px}
+  .dmeta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+  .badge{font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:3px}
+  .bt{color:var(--accent);background:rgba(124,106,245,.12)}
+  .bs{color:var(--text3)}
 
-  /* Main */
-  .main { flex: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--bg3) transparent; }
+  .chart-section{margin-bottom:18px}
+  .chart-toolbar{display:flex;align-items:center;gap:3px;padding:9px 13px;background:var(--bg2);border:1px solid var(--border);border-bottom:none;border-radius:6px 6px 0 0}
+  .pbtn{background:transparent;border:none;color:var(--text3);font-family:var(--mono);font-size:11px;padding:4px 9px;border-radius:3px;cursor:pointer;transition:all .12s}
+  .pbtn:hover{color:var(--text2);background:var(--bg3)}
+  .pbtn.active{color:var(--accent);background:rgba(124,106,245,.15)}
+  .tspc{flex:1}
+  .csrc{font-family:var(--mono);font-size:9px;color:var(--text3)}
+  .chart-img-wrap{background:#0d1117;border:1px solid var(--border);border-radius:0 0 6px 6px;overflow:hidden;min-height:260px;display:flex;align-items:center;justify-content:center}
+  .chart-img-wrap img{width:100%;display:block}
+  .cerr{font-family:var(--mono);font-size:11px;color:var(--text3);padding:50px;text-align:center;line-height:2}
+  .no-chart{background:var(--bg2);border:1px solid var(--border);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;height:140px;gap:8px;color:var(--text3);font-family:var(--mono);font-size:11px}
 
-  .empty-state {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    height: 100%; gap: 16px; color: var(--text3);
-  }
-  .empty-icon { font-size: 28px; opacity: 0.25; }
-  .empty-hint { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; }
+  .ext-links{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+  .ext-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);padding:6px 13px;border-radius:4px;text-decoration:none;transition:all .15s}
+  .ext-link:hover{border-color:var(--accent);color:var(--accent)}
+  .ext-link svg{width:11px;height:11px;flex-shrink:0}
 
-  .stock-detail { padding: 28px 32px; }
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:28px;width:460px;max-width:92vw}
+  .mtitle{font-family:var(--mono);font-size:12px;color:var(--text);margin-bottom:20px;letter-spacing:.06em}
+  .mfield{margin-bottom:13px}
+  .mlabel{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+  .minput{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:12px;padding:8px 11px;border-radius:4px;outline:none;transition:border-color .15s}
+  .minput:focus{border-color:var(--accent)}
+  .mta{height:90px;resize:vertical}
+  .mhint{font-size:10px;color:var(--text3);margin-top:4px;font-family:var(--mono)}
+  .mactions{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
+  .btn-cancel{background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:11px;padding:7px 15px;border-radius:4px;cursor:pointer}
+  .btn-ok{background:var(--accent2);border:none;color:#fff;font-family:var(--mono);font-size:11px;padding:7px 15px;border-radius:4px;cursor:pointer}
+  .btn-ok:hover{background:var(--accent)}
 
-  .detail-header { margin-bottom: 22px; }
-  .detail-name { font-size: 22px; font-weight: 500; margin-bottom: 6px; }
-  .detail-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .badge-ticker { font-family: var(--mono); font-size: 11px; color: var(--accent); background: rgba(124,106,245,0.12); padding: 3px 10px; border-radius: 3px; }
-  .badge-tier { font-family: var(--mono); font-size: 11px; color: var(--text3); }
-
-  /* Stats */
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; margin-bottom: 18px; }
-  .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 13px 15px; }
-  .stat-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 7px; }
-  .stat-value { font-family: var(--mono); font-size: 17px; font-weight: 500; color: var(--text); }
-  .stat-value.loading { color: var(--text3); font-size: 12px; animation: pulse 1.5s ease-in-out infinite; }
-  .pos { color: var(--green); }
-  .neg { color: var(--red); }
-
-  /* Chart */
-  .chart-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 18px; }
-  .chart-toolbar { display: flex; align-items: center; gap: 3px; padding: 9px 13px; border-bottom: 1px solid var(--border); }
-  .period-btn {
-    background: transparent; border: none; color: var(--text3);
-    font-family: var(--mono); font-size: 11px; padding: 4px 9px; border-radius: 3px;
-    cursor: pointer; transition: all 0.12s; letter-spacing: 0.03em;
-  }
-  .period-btn:hover { color: var(--text2); background: var(--bg3); }
-  .period-btn.active { color: var(--accent); background: rgba(124,106,245,0.15); }
-  .chart-flex { flex: 1; }
-  .chart-source { font-family: var(--mono); font-size: 9px; color: var(--text3); }
-  .chart-body { height: 400px; background: #131722; }
-
-  /* No ticker */
-  .no-ticker-block {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    height: 180px; gap: 8px; color: var(--text3); font-family: var(--mono); font-size: 11px;
-  }
-
-  /* Links */
-  .ext-links { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-  .ext-link {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-family: var(--mono); font-size: 11px; color: var(--text2);
-    background: var(--bg2); border: 1px solid var(--border);
-    padding: 6px 13px; border-radius: 4px; text-decoration: none;
-    transition: all 0.15s; letter-spacing: 0.02em;
-  }
-  .ext-link:hover { border-color: var(--accent); color: var(--accent); }
-
-  /* Sector note */
-  .sector-note {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 6px 6px 0; padding: 13px 18px;
-    font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.8;
-    margin-bottom: 18px;
-  }
-
-  /* Modal */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; align-items: center; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: 8px; padding: 28px; width: 460px; max-width: 92vw; }
-  .modal-title { font-family: var(--mono); font-size: 12px; color: var(--text); margin-bottom: 20px; letter-spacing: 0.06em; }
-  .modal-field { margin-bottom: 13px; }
-  .modal-label { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 5px; }
-  .modal-input {
-    width: 100%; background: var(--bg3); border: 1px solid var(--border2); color: var(--text);
-    font-family: var(--mono); font-size: 12px; padding: 8px 11px; border-radius: 4px; outline: none; transition: border-color 0.15s;
-  }
-  .modal-input:focus { border-color: var(--accent); }
-  .modal-ta { height: 90px; resize: vertical; }
-  .modal-hint { font-size: 10px; color: var(--text3); margin-top: 4px; font-family: var(--mono); }
-  .modal-actions { display: flex; gap: 8px; margin-top: 18px; justify-content: flex-end; }
-  .btn-cancel { background: transparent; border: 1px solid var(--border2); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 7px 15px; border-radius: 4px; cursor: pointer; }
-  .btn-ok { background: var(--accent2); border: none; color: #fff; font-family: var(--mono); font-size: 11px; padding: 7px 15px; border-radius: 4px; cursor: pointer; }
-  .btn-ok:hover { background: var(--accent); }
-
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 2px; }
+  ::-webkit-scrollbar{width:4px}
+  ::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <span class="header-logo">AI SECTOR TRACKER</span>
-  <div class="header-sep"></div>
-  <span class="header-sub">iam_510 · power / optical</span>
+  <span class="logo">AI SECTOR TRACKER</span>
+  <div class="sep"></div>
+  <span class="sub">iam_510</span>
   <button class="btn-add" onclick="openModal()">+ 섹터 추가</button>
 </div>
 
 <div class="layout">
   <aside class="sidebar" id="sidebar"></aside>
-  <main class="main" id="main">
-    <div class="empty-state">
-      <div class="empty-icon">◈</div>
-      <div class="empty-hint">← 종목을 선택하세요</div>
-    </div>
-  </main>
+  <main class="main" id="main"></main>
 </div>
 
 <div class="modal-overlay" id="modal">
   <div class="modal">
-    <div class="modal-title">// NEW_SECTOR</div>
-    <div class="modal-field">
-      <div class="modal-label">섹터명</div>
-      <input class="modal-input" id="ms-name" placeholder="예: Memory / Robotics / Cooling">
+    <div class="mtitle">// NEW_SECTOR</div>
+    <div class="mfield"><div class="mlabel">섹터명</div><input class="minput" id="ms-name" placeholder="예: Memory / Robotics"></div>
+    <div class="mfield"><div class="mlabel">섹터 설명 (선택)</div><input class="minput" id="ms-desc" placeholder="한 줄 설명"></div>
+    <div class="mfield">
+      <div class="mlabel">종목 (한 줄에 하나 — 이름, 티어, 티커)</div>
+      <textarea class="minput mta" id="ms-stocks" placeholder="SK Hynix, High, 000660.KS&#10;Micron, High, MU"></textarea>
+      <div class="mhint">티커 없으면 빈칸. 티어는 자유롭게 (High / Mid / Low / Early 등)</div>
     </div>
-    <div class="modal-field">
-      <div class="modal-label">섹터 설명 (선택)</div>
-      <input class="modal-input" id="ms-desc" placeholder="한 줄 설명">
-    </div>
-    <div class="modal-field">
-      <div class="modal-label">종목 (한 줄에 하나 — 이름, 티어, 티커)</div>
-      <textarea class="modal-input modal-ta" id="ms-stocks" placeholder="SK Hynix, High, 000660.KS
-Micron, High, MU
-Samsung Elec, Mid, 005930.KS"></textarea>
-      <div class="modal-hint">티커 없으면 빈칸. 티어는 자유롭게 (High / Mid / Low / Early 등)</div>
-    </div>
-    <div class="modal-actions">
+    <div class="mactions">
       <button class="btn-cancel" onclick="closeModal()">취소</button>
       <button class="btn-ok" onclick="addSector()">추가</button>
     </div>
@@ -247,342 +125,191 @@ Samsung Elec, Mid, 005930.KS"></textarea>
 </div>
 
 <script>
-// ── 색상 & 힌트 ────────────────────────────────────────────────────────
-const TIER_COLORS = {
-  'High':'#f5a623','High-Mid':'#e8883a','Mid':'#7c6af5','Mid-Low':'#4a9eff','Low':'#3ecf8e',
-  'Very Early':'#f04040','Early':'#e8883a','Early-Mid':'#f5a623','Mid Late':'#4a9eff','Mature':'#3ecf8e',
-  'default':'#888899'
-};
-const TIER_HINTS = {
-  'Very Early':'초기 수혜','Early':'선행 수혜','Early-Mid':'중간 선행','Mid Late':'후행','Mature':'성숙기'
-};
+const EXT_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>`;
+
+const TIER_COLORS = {'High':'#f5a623','High-Mid':'#e8883a','Mid':'#7c6af5','Mid-Low':'#4a9eff','Low':'#3ecf8e','Very Early':'#f04040','Early':'#e8883a','Early-Mid':'#f5a623','Mid Late':'#4a9eff','Mature':'#3ecf8e','default':'#888899'};
+const TIER_HINTS = {'Very Early':'초기 수혜','Early':'선행 수혜','Early-Mid':'중간 선행','Mid Late':'후행','Mature':'성숙기'};
 const SECTOR_TIER_ORDER = {
-  'Power':   ['High','High-Mid','Mid','Mid-Low','Low'],
-  'Optical': ['Very Early','Early','Early-Mid','Mid','Mid Late','Mature'],
+  'Power':['High','High-Mid','Mid','Mid-Low','Low'],
+  'Optical':['Very Early','Early','Early-Mid','Mid','Mid Late','Mature'],
   '_default':['High','High-Mid','Mid','Mid-Low','Low','Very Early','Early','Early-Mid','Mid Late','Mature']
 };
+const PERIODS = {d:'일봉', w:'주봉', m:'월봉'};
 
-// ── TradingView 티커 변환 ──────────────────────────────────────────────
-function toTVTicker(ticker) {
-  if (!ticker) return null;
-  const map = {
-    '6981.T':'TSE:6981','6762.T':'TSE:6762',
-    'ABBN.SW':'SIX:ABBN',
-    'SU.PA':'EURONEXT:SU',
-    '2308.TW':'TWSE:2308',
-    '009150.KS':'KRX:009150',
-    'LGRDY':'EURONEXT:LR',
-    'IFNNY':'XETR:IFX',
-  };
-  return map[ticker] || ticker;
-}
-
-// ── 종목 데이터 ────────────────────────────────────────────────────────
 let sectors = {
-  'Power': {
-    label: 'AI · Power',
-    note: '800V → 48V → 0.8V → μV 전압 강하 체인. Vera Rubin 세대 전환(2025~2026)이 핵심 카탈리스트. <strong>High</strong> 티어(발전·송전)가 선행하고, 이후 <strong>Mid</strong>(랙·쿨링), <strong>Low</strong>(PMIC·GaN)으로 파급.',
-    stocks: [
-      {name:'GE Vernova',   tier:'High',     ticker:'GEV'},
-      {name:'Bloom Energy', tier:'High',     ticker:'BE'},
-      {name:'Constellation',tier:'High',     ticker:'CEG'},
-      {name:'Vistra',       tier:'High',     ticker:'VST'},
-      {name:'Quanta',       tier:'High',     ticker:'PWR'},
-      {name:'Talen',        tier:'High',     ticker:'TLN'},
-      {name:'Powell',       tier:'High',     ticker:'POWL'},
-      {name:'Eaton',        tier:'High-Mid', ticker:'ETN'},
-      {name:'ABB',          tier:'High-Mid', ticker:'ABBN.SW'},
-      {name:'Vertiv',       tier:'Mid',      ticker:'VRT'},
-      {name:'Schneider',    tier:'Mid',      ticker:'SU.PA'},
-      {name:'nVent',        tier:'Mid',      ticker:'NVT'},
-      {name:'Delta',        tier:'Mid',      ticker:'2308.TW'},
-      {name:'Legrand',      tier:'Mid-Low',  ticker:'LGRDY'},
-      {name:'AEIS',         tier:'Mid-Low',  ticker:'AEIS'},
-      {name:'MPS',          tier:'Low',      ticker:'MPWR'},
-      {name:'Vicor',        tier:'Low',      ticker:'VICR'},
-      {name:'Infineon',     tier:'Low',      ticker:'IFNNY'},
-      {name:'STM',          tier:'Low',      ticker:'STM'},
-      {name:'Murata',       tier:'Low',      ticker:'6981.T'},
-      {name:'TDK',          tier:'Low',      ticker:'6762.T'},
-      {name:'Amphenol',     tier:'Low',      ticker:'APH'},
-      {name:'Navitas',      tier:'Low',      ticker:'NVTS'},
-      {name:'삼성전기',        tier:'Low',      ticker:'009150.KS'},
+  'Power':{
+    label:'AI · Power',
+    note:'800V → 48V → 0.8V → μV 전압 강하 체인. Vera Rubin 세대 전환(2025~2026)이 핵심 카탈리스트. <strong>High</strong> 티어(발전·송전)가 선행하고, 이후 <strong>Mid</strong>(랙·쿨링), <strong>Low</strong>(PMIC·GaN)으로 파급.',
+    stocks:[
+      {name:'GE Vernova',tier:'High',ticker:'GEV'},{name:'Bloom Energy',tier:'High',ticker:'BE'},
+      {name:'Constellation',tier:'High',ticker:'CEG'},{name:'Vistra',tier:'High',ticker:'VST'},
+      {name:'Quanta',tier:'High',ticker:'PWR'},{name:'Talen',tier:'High',ticker:'TLN'},
+      {name:'Powell',tier:'High',ticker:'POWL'},{name:'Eaton',tier:'High-Mid',ticker:'ETN'},
+      {name:'ABB',tier:'High-Mid',ticker:'ABBN.SW'},{name:'Vertiv',tier:'Mid',ticker:'VRT'},
+      {name:'Schneider',tier:'Mid',ticker:'SU.PA'},{name:'nVent',tier:'Mid',ticker:'NVT'},
+      {name:'Delta',tier:'Mid',ticker:'2308.TW'},{name:'Legrand',tier:'Mid-Low',ticker:'LGRDY'},
+      {name:'AEIS',tier:'Mid-Low',ticker:'AEIS'},{name:'MPS',tier:'Low',ticker:'MPWR'},
+      {name:'Vicor',tier:'Low',ticker:'VICR'},{name:'Infineon',tier:'Low',ticker:'IFNNY'},
+      {name:'STM',tier:'Low',ticker:'STM'},{name:'Murata',tier:'Low',ticker:'6981.T'},
+      {name:'TDK',tier:'Low',ticker:'6762.T'},{name:'Amphenol',tier:'Low',ticker:'APH'},
+      {name:'Navitas',tier:'Low',ticker:'NVTS'},{name:'삼성전기',tier:'Low',ticker:'009150.KS'},
     ]
   },
-  'Optical': {
-    label: 'AI · Optical',
-    note: '800G→1.6T 속도 전환과 CPO(Co-packaged Optics) 채택이 핵심 드라이버. <strong>Very Early</strong>는 기술 초기 검증 단계, <strong>Early</strong>는 선행 수혜 구간, <strong>Mid</strong>는 수주 가시성 확보 시점.',
-    stocks: [
-      {name:'LWLG',         tier:'Very Early', ticker:'LWLG'},
-      {name:'QCi',          tier:'Very Early', ticker:null},
-      {name:'Aeluma',       tier:'Very Early', ticker:'ALMU'},
-      {name:'POET',         tier:'Very Early', ticker:'POET'},
-      {name:'Marvell',      tier:'Early',      ticker:'MRVL'},
-      {name:'AAOI',         tier:'Early',      ticker:'AAOI'},
-      {name:'Innolight',    tier:'Early',      ticker:null},
-      {name:'Eoptolink',    tier:'Early',      ticker:null},
-      {name:'Yuanjie',      tier:'Early',      ticker:null},
-      {name:'nLIGHT',       tier:'Early',      ticker:null},
-      {name:'Ciena',        tier:'Early',      ticker:'CIEN'},
-      {name:'Astera Labs',  tier:'Early',      ticker:'ALAB'},
-      {name:'Semtech',      tier:'Early',      ticker:'SMTC'},
-      {name:'Lumentum',     tier:'Early-Mid',  ticker:'LITE'},
-      {name:'Coherent',     tier:'Early-Mid',  ticker:'COHR'},
-      {name:'Credo',        tier:'Early-Mid',  ticker:'CRDO'},
-      {name:'Sivers',       tier:'Early-Mid',  ticker:null},
-      {name:'Cisco',        tier:'Mid',        ticker:'CSCO'},
-      {name:'Nokia',        tier:'Mid',        ticker:'NOK'},
-      {name:'Sumimoto',     tier:'Mid',        ticker:null},
-      {name:'MACOM',        tier:'Mid Late',   ticker:null},
-      {name:'IPG Photonics',tier:'Mature',     ticker:null},
+  'Optical':{
+    label:'AI · Optical',
+    note:'800G→1.6T 속도 전환과 CPO(Co-packaged Optics) 채택이 핵심 드라이버. <strong>Very Early</strong>는 기술 초기 검증, <strong>Early</strong>는 선행 수혜, <strong>Mid</strong>는 수주 가시성 확보 시점.',
+    stocks:[
+      {name:'LWLG',tier:'Very Early',ticker:'LWLG'},{name:'QCi',tier:'Very Early',ticker:null},
+      {name:'Aeluma',tier:'Very Early',ticker:'ALMU'},{name:'POET',tier:'Very Early',ticker:'POET'},
+      {name:'Marvell',tier:'Early',ticker:'MRVL'},{name:'AAOI',tier:'Early',ticker:'AAOI'},
+      {name:'Innolight',tier:'Early',ticker:null},{name:'Eoptolink',tier:'Early',ticker:null},
+      {name:'Yuanjie',tier:'Early',ticker:null},{name:'nLIGHT',tier:'Early',ticker:null},
+      {name:'Ciena',tier:'Early',ticker:'CIEN'},{name:'Astera Labs',tier:'Early',ticker:'ALAB'},
+      {name:'Semtech',tier:'Early',ticker:'SMTC'},{name:'Lumentum',tier:'Early-Mid',ticker:'LITE'},
+      {name:'Coherent',tier:'Early-Mid',ticker:'COHR'},{name:'Credo',tier:'Early-Mid',ticker:'CRDO'},
+      {name:'Sivers',tier:'Early-Mid',ticker:null},{name:'Cisco',tier:'Mid',ticker:'CSCO'},
+      {name:'Nokia',tier:'Mid',ticker:'NOK'},{name:'Sumimoto',tier:'Mid',ticker:null},
+      {name:'MACOM',tier:'Mid Late',ticker:null},{name:'IPG Photonics',tier:'Mature',ticker:null},
     ]
   }
 };
 
-let activeSector = null;
-let activeStock  = null;
-let currentPeriod = '6M';
+let activeSector=null, activeStock=null, currentPeriod='d';
 
-// ── 사이드바 렌더 ──────────────────────────────────────────────────────
+// 미국 상장 티커 여부 (Finviz는 미국 종목만 지원)
+function isUSA(ticker) {
+  if (!ticker) return false;
+  return !/[.\-]/.test(ticker) && !/KS$|KQ$|TW$|PA$|SW$/.test(ticker);
+}
+
+function finvizUrl(ticker, p) {
+  return `https://finviz.com/chart.ashx?t=${ticker}&ty=c&ta=1&p=${p}`;
+}
+
+// ── 사이드바 ──────────────────────────────────────────────────────────
 function renderSidebar() {
   const sb = document.getElementById('sidebar');
-  sb.innerHTML = Object.entries(sectors).map(([key, sector]) => {
-    const order = SECTOR_TIER_ORDER[key] || SECTOR_TIER_ORDER['_default'];
+  sb.innerHTML = Object.entries(sectors).map(([key,sec])=>{
+    const order = SECTOR_TIER_ORDER[key]||SECTOR_TIER_ORDER['_default'];
     const tiers = {};
-    sector.stocks.forEach(s => { (tiers[s.tier] = tiers[s.tier]||[]).push(s); });
-    const sortedTiers = Object.keys(tiers).sort((a,b) => {
-      const ai = order.indexOf(a), bi = order.indexOf(b);
+    sec.stocks.forEach(s=>{ (tiers[s.tier]=tiers[s.tier]||[]).push(s); });
+    const sorted = Object.keys(tiers).sort((a,b)=>{
+      const ai=order.indexOf(a),bi=order.indexOf(b);
       return (ai<0?99:ai)-(bi<0?99:bi);
     });
-    const isActive = activeSector === key;
+    const isOpen = activeSector===key;
     return `<div class="sector-group">
-      <div class="sector-header ${isActive?'active':''}" onclick="selectSector('${key}')">
-        <span>${sector.label}</span>
-        <span class="sector-count">${sector.stocks.length}</span>
+      <div class="sector-header ${isOpen?'open':''}" onclick="toggleSector('${key}')">
+        <span>${sec.label}</span><span class="sector-count">${sec.stocks.length}</span>
       </div>
-      ${isActive ? sortedTiers.map(tier => `
+      ${isOpen?sorted.map(tier=>`
         <div>
           <div class="tier-label">
-            <span class="tier-dot" style="background:${TIER_COLORS[tier]||TIER_COLORS.default}"></span>
-            ${tier}
-            ${TIER_HINTS[tier]?`<span class="tier-hint">${TIER_HINTS[tier]}</span>`:''}
+            <span class="tdot" style="background:${TIER_COLORS[tier]||TIER_COLORS.default}"></span>
+            ${tier}${TIER_HINTS[tier]?` <span class="thint">${TIER_HINTS[tier]}</span>`:''}
           </div>
-          ${tiers[tier].map(s => `
+          ${tiers[tier].map(s=>`
             <div class="stock-item ${activeStock&&activeStock.name===s.name?'active':''}"
                  onclick="selectStock('${key}','${s.name}','${s.tier}','${s.ticker||''}')">
-              <span class="stock-name">${s.name}</span>
-              ${s.ticker?`<span class="stock-ticker">${s.ticker}</span>`:`<span class="no-ticker">비상장</span>`}
+              <span class="sname">${s.name}</span>
+              ${s.ticker?`<span class="sticker">${s.ticker}</span>`:`<span class="noticker">비상장</span>`}
             </div>`).join('')}
-        </div>`).join('') : ''}
+        </div>`).join(''):''}
     </div>`;
   }).join('');
 }
 
-function selectSector(key) {
-  if (activeSector === key) { activeSector = null; }
-  else { activeSector = key; activeStock = null; renderMain(null); }
+function toggleSector(key) {
+  activeSector = activeSector===key ? null : key;
+  if (activeSector) { activeStock=null; showEmpty(); }
   renderSidebar();
 }
 
-function selectStock(sectorKey, name, tier, ticker) {
-  activeStock = {name, tier, ticker:ticker||null, sector:sectors[sectorKey].label, sectorKey};
+function selectStock(sk, name, tier, ticker) {
+  activeStock = {name, tier, ticker:ticker||null, sector:sectors[sk].label};
   renderSidebar();
-  renderMain(activeStock);
+  renderDetail();
 }
 
-// ── 메인 패널 렌더 ────────────────────────────────────────────────────
-const PERIODS = ['1W','1M','3M','6M','1Y','2Y','5Y'];
-const TV_PERIOD_MAP = {'1W':'1W','1M':'1M','3M':'3M','6M':'6M','1Y':'12M','2Y':'24M','5Y':'60M'};
+function showEmpty() {
+  const note = activeSector ? sectors[activeSector].note : null;
+  document.getElementById('main').innerHTML = `<div class="empty-state">
+    ${note?`<div class="sector-note">${note}</div>`:'<div class="empty-icon">◈</div>'}
+    <div class="empty-hint">← 종목을 선택하세요</div>
+  </div>`;
+}
 
-function renderMain(stock) {
-  const main = document.getElementById('main');
-  if (!stock) {
-    const note = activeSector ? sectors[activeSector].note : null;
-    main.innerHTML = `<div class="empty-state">
-      ${note?`<div class="sector-note" style="max-width:520px">${note}</div>`:''}
-      <div class="empty-hint">← 종목을 선택하세요</div>
+// ── 상세 화면 ─────────────────────────────────────────────────────────
+function renderDetail() {
+  const s = activeStock;
+  const usa = isUSA(s.ticker);
+
+  let chartHtml;
+  if (s.ticker && usa) {
+    const pbtns = Object.entries(PERIODS).map(([k,v])=>
+      `<button class="pbtn ${k===currentPeriod?'active':''}" onclick="changePeriod('${k}')">${v}</button>`
+    ).join('');
+    chartHtml = `<div class="chart-section">
+      <div class="chart-toolbar">${pbtns}<div class="tspc"></div><span class="csrc">Finviz</span></div>
+      <div class="chart-img-wrap">
+        <img id="chart-img" src="${finvizUrl(s.ticker,currentPeriod)}" alt="${s.name} chart"
+          onerror="this.outerHTML='<div class=cerr>차트를 불러오지 못했어요<br><small>Finviz에서 직접 확인하세요</small></div>'">
+      </div>
     </div>`;
-    return;
+  } else if (s.ticker && !usa) {
+    chartHtml = `<div class="no-chart"><span style="opacity:.25;font-size:18px">◌</span><span>해외 거래소 — Finviz 미지원 (${s.ticker})</span></div>`;
+  } else {
+    chartHtml = `<div class="no-chart"><span style="opacity:.25;font-size:18px">◌</span><span>티커 미등록 종목</span></div>`;
   }
 
-  const tvTicker = toTVTicker(stock.ticker);
+  const links = s.ticker ? `<div class="ext-links">
+    <a class="ext-link" href="https://stockanalysis.com/stocks/${s.ticker.toLowerCase().replace(/\./g,'-')}/" target="_blank">${EXT_SVG} Stock Analysis</a>
+    ${usa?`<a class="ext-link" href="https://finviz.com/quote.ashx?t=${s.ticker}" target="_blank">${EXT_SVG} Finviz</a>`:''}
+  </div>` : '';
 
-  const statsHtml = stock.ticker ? `
-    <div id="tv-symbol-info" style="margin-bottom:18px;border-radius:6px;overflow:hidden;"></div>` : '';
-
-  const chartHtml = tvTicker ? `
-    <div class="chart-wrap">
-      <div class="chart-toolbar">
-        ${PERIODS.map(p=>`<button class="period-btn ${p===currentPeriod?'active':''}" onclick="changePeriod('${p}')">${p}</button>`).join('')}
-        <div class="chart-flex"></div>
-        <span class="chart-source">TradingView</span>
-      </div>
-      <div class="chart-body" id="tv-chart"></div>
-    </div>` : `
-    <div class="chart-wrap">
-      <div class="no-ticker-block">
-        <span style="font-size:18px;opacity:0.25">◌</span>
-        <span>티커 미등록 — 상장 전 또는 OTC 종목</span>
-      </div>
-    </div>`;
-
-  const linksHtml = stock.ticker ? `
-    <div class="ext-links">
-      <a class="ext-link" href="https://finance.yahoo.com/quote/${stock.ticker}" target="_blank">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
-        Yahoo Finance
-      </a>
-      <a class="ext-link" href="https://finance.yahoo.com/quote/${stock.ticker}/financials/" target="_blank">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
-        재무제표
-      </a>
-      <a class="ext-link" href="https://stockanalysis.com/stocks/${stock.ticker.toLowerCase().replace(/\./g,'-')}/" target="_blank">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
-        Stock Analysis
-      </a>
-      ${tvTicker?`<a class="ext-link" href="https://www.tradingview.com/chart/?symbol=${tvTicker}" target="_blank">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
-        TradingView
-      </a>`:''}
-    </div>` : '';
-
-  main.innerHTML = `
-    <div class="stock-detail">
-      <div class="detail-header">
-        <div class="detail-name">${stock.name}</div>
-        <div class="detail-meta">
-          ${stock.ticker?`<span class="badge-ticker">${stock.ticker}</span>`:`<span class="badge-tier" style="font-style:italic">티커 없음</span>`}
-          <span class="badge-tier">${stock.tier}</span>
-          <span class="badge-tier" style="color:var(--text3)">${stock.sector}</span>
-        </div>
-      </div>
-      ${statsHtml}
-      ${chartHtml}
-      ${linksHtml}
-    </div>`;
-
-  if (tvTicker) loadTVChart(tvTicker);
-}
-
-// ── TradingView 위젯 ───────────────────────────────────────────────────
-function makeTVWidget(containerId, config) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  container.innerHTML = '';
-
-  // TradingView 공식 방식: div.tradingview-widget-container > div + script
-  const wrap = document.createElement('div');
-  wrap.className = 'tradingview-widget-container';
-  wrap.style.cssText = 'width:100%;height:100%';
-
-  const inner = document.createElement('div');
-  inner.className = 'tradingview-widget-container__widget';
-  inner.style.cssText = 'width:100%;height:100%';
-  wrap.appendChild(inner);
-
-  const cfg = document.createElement('script');
-  cfg.type = 'text/javascript';
-  cfg.src = 'https://s3.tradingview.com/external-embedding/' + config.widgetSrc;
-  cfg.async = true;
-
-  // config를 JSON으로 직렬화해서 별도 script 태그에 담음
-  const cfgScript = document.createElement('script');
-  cfgScript.type = 'text/javascript';
-  cfgScript.textContent = 'window.__TV_CONFIG_' + containerId + ' = ' + JSON.stringify(config.params) + ';';
-  document.head.appendChild(cfgScript);
-
-  // TradingView는 바로 앞 script 태그의 innerHTML을 읽으므로
-  // textContent 방식 대신 iframe URL 방식 사용
-  const iframeUrl = buildTVIframeUrl(config);
-  const iframe = document.createElement('iframe');
-  iframe.src = iframeUrl;
-  iframe.style.cssText = 'width:100%;height:100%;border:none;display:block';
-  iframe.setAttribute('allowtransparency', 'true');
-  iframe.setAttribute('scrolling', 'no');
-  container.appendChild(iframe);
-}
-
-function buildTVIframeUrl(config) {
-  const p = config.params;
-  if (config.type === 'info') {
-    return `https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.html#${encodeURIComponent(JSON.stringify(p))}`;
-  }
-  // advanced chart
-  return `https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.html#${encodeURIComponent(JSON.stringify(p))}`;
-}
-
-function loadTVChart(tvTicker) {
-  // 심볼 정보 위젯
-  makeTVWidget('tv-symbol-info', {
-    type: 'info',
-    widgetSrc: 'embed-widget-symbol-info.js',
-    params: {
-      symbol: tvTicker,
-      width: '100%',
-      locale: 'kr',
-      colorTheme: 'dark',
-      isTransparent: false,
-    }
-  });
-
-  // 차트 위젯
-  makeTVWidget('tv-chart', {
-    type: 'chart',
-    widgetSrc: 'embed-widget-advanced-chart.js',
-    params: {
-      autosize: true,
-      symbol: tvTicker,
-      interval: 'D',
-      timezone: 'Asia/Seoul',
-      theme: 'dark',
-      style: '1',
-      locale: 'kr',
-      range: TV_PERIOD_MAP[currentPeriod] || '6M',
-      hide_top_toolbar: false,
-      hide_legend: false,
-      save_image: false,
-      backgroundColor: 'rgba(17,17,24,1)',
-      gridColor: 'rgba(255,255,255,0.04)',
-    }
-  });
+  document.getElementById('main').innerHTML = `<div class="detail">
+    <div class="dname">${s.name}</div>
+    <div class="dmeta">
+      ${s.ticker?`<span class="badge bt">${s.ticker}</span>`:''}
+      <span class="badge bs">${s.tier}</span>
+      <span class="badge bs" style="color:var(--text3)">${s.sector}</span>
+    </div>
+    ${chartHtml}
+    ${links}
+  </div>`;
 }
 
 function changePeriod(p) {
   currentPeriod = p;
-  document.querySelectorAll('.period-btn').forEach(b => b.classList.toggle('active', b.textContent === p));
-  if (activeStock && activeStock.ticker) {
-    const tvTicker = toTVTicker(activeStock.ticker);
-    if (tvTicker) loadTVChart(tvTicker);
-  }
+  document.querySelectorAll('.pbtn').forEach(b=>b.classList.toggle('active', b.textContent===PERIODS[p]));
+  const img = document.getElementById('chart-img');
+  if (img && activeStock?.ticker) img.src = finvizUrl(activeStock.ticker, p);
 }
 
-
-// ── 섹터 추가 모달 ────────────────────────────────────────────────────
-function openModal()  { document.getElementById('modal').classList.add('open'); }
+// ── 모달 ──────────────────────────────────────────────────────────────
+function openModal() { document.getElementById('modal').classList.add('open'); }
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
-  ['ms-name','ms-desc','ms-stocks'].forEach(id => document.getElementById(id).value = '');
+  ['ms-name','ms-desc','ms-stocks'].forEach(id=>document.getElementById(id).value='');
 }
 function addSector() {
   const name = document.getElementById('ms-name').value.trim();
   if (!name) return;
-  const desc   = document.getElementById('ms-desc').value.trim();
-  const raw    = document.getElementById('ms-stocks').value.trim();
-  const stocks = raw.split('\n').filter(l=>l.trim()).map(line => {
-    const p = line.split(',').map(s=>s.trim());
-    return {name:p[0]||'', tier:p[1]||'Mid', ticker:p[2]||null};
-  }).filter(s=>s.name);
+  const stocks = document.getElementById('ms-stocks').value.trim()
+    .split('\n').filter(l=>l.trim()).map(line=>{
+      const p=line.split(',').map(x=>x.trim());
+      return {name:p[0]||'',tier:p[1]||'Mid',ticker:p[2]||null};
+    }).filter(s=>s.name);
   const key = name.replace(/\s+/g,'_');
-  sectors[key] = {label:`AI · ${name}`, note:desc, stocks};
-  closeModal();
-  activeSector = key; activeStock = null;
-  renderSidebar(); renderMain(null);
+  sectors[key]={label:`AI · ${name}`,note:document.getElementById('ms-desc').value.trim(),stocks};
+  closeModal(); activeSector=key; activeStock=null;
+  renderSidebar(); showEmpty();
 }
 
-// ── Init ──────────────────────────────────────────────────────────────
-activeSector = 'Power';
+// init
+activeSector='Power';
 renderSidebar();
-renderMain(null);
+showEmpty();
 </script>
 </body>
 </html>
