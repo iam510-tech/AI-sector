@@ -7,17 +7,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
+  :root{
     --bg:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;
     --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
     --text:#e8e8f0;--text2:#8888a0;--text3:#555568;
     --accent:#7c6af5;--accent2:#5a4fd4;
-    --green:#3ecf8e;--red:#f04040;
+    --green:#3ecf8e;--red:#f04040;--amber:#f5a623;
     --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans KR',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
 
+  /* Header */
   .header{border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;background:rgba(10,10,15,0.96);backdrop-filter:blur(12px);z-index:100}
   .logo{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent);letter-spacing:.08em}
   .sep{width:1px;height:20px;background:var(--border2)}
@@ -25,8 +26,10 @@
   .btn-add{margin-left:auto;background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:11px;padding:6px 14px;border-radius:4px;cursor:pointer;transition:all .15s}
   .btn-add:hover{border-color:var(--accent);color:var(--accent)}
 
+  /* Layout */
   .layout{display:flex;height:calc(100vh - 53px)}
 
+  /* Sidebar */
   .sidebar{width:256px;min-width:256px;border-right:1px solid var(--border);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
   .sector-group{border-bottom:1px solid var(--border)}
   .sector-header{padding:11px 16px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:color .15s}
@@ -44,36 +47,44 @@
   .sticker{font-family:var(--mono);font-size:10px;color:var(--text3)}
   .noticker{font-size:9px;color:var(--text3);font-style:italic}
 
+  /* Main */
   .main{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
   .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;color:var(--text3)}
   .empty-icon{font-size:28px;opacity:.2}
   .empty-hint{font-family:var(--mono);font-size:11px;letter-spacing:.06em}
   .sector-note{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:13px 18px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8;max-width:540px}
 
-  .detail{padding:28px 32px;max-width:960px}
-  .dname{font-size:22px;font-weight:500;margin-bottom:6px}
-  .dmeta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+  /* Detail */
+  .detail{padding:28px 32px;max-width:900px}
+  .dname{font-size:24px;font-weight:500;margin-bottom:8px}
+  .dmeta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:28px}
   .badge{font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:3px}
   .bt{color:var(--accent);background:rgba(124,106,245,.12)}
   .bs{color:var(--text3)}
 
-  .chart-section{margin-bottom:18px}
-  .chart-toolbar{display:flex;align-items:center;gap:3px;padding:9px 13px;background:var(--bg2);border:1px solid var(--border);border-bottom:none;border-radius:6px 6px 0 0}
-  .pbtn{background:transparent;border:none;color:var(--text3);font-family:var(--mono);font-size:11px;padding:4px 9px;border-radius:3px;cursor:pointer;transition:all .12s}
-  .pbtn:hover{color:var(--text2);background:var(--bg3)}
-  .pbtn.active{color:var(--accent);background:rgba(124,106,245,.15)}
-  .tspc{flex:1}
-  .csrc{font-family:var(--mono);font-size:9px;color:var(--text3)}
-  .chart-img-wrap{background:#0d1117;border:1px solid var(--border);border-radius:0 0 6px 6px;overflow:hidden;min-height:260px;display:flex;align-items:center;justify-content:center}
-  .chart-img-wrap img{width:100%;display:block}
-  .cerr{font-family:var(--mono);font-size:11px;color:var(--text3);padding:50px;text-align:center;line-height:2}
-  .no-chart{background:var(--bg2);border:1px solid var(--border);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;height:140px;gap:8px;color:var(--text3);font-family:var(--mono);font-size:11px}
+  /* Chart links grid */
+  .chart-links-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;margin-bottom:10px}
+  .chart-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:28px}
+  .chart-card{
+    display:flex;flex-direction:column;gap:6px;
+    background:var(--bg2);border:1px solid var(--border);
+    border-radius:8px;padding:16px 18px;
+    text-decoration:none;
+    transition:all .15s;cursor:pointer;
+  }
+  .chart-card:hover{border-color:var(--accent);background:rgba(124,106,245,.06);transform:translateY(-1px)}
+  .chart-card-name{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:8px}
+  .chart-card-desc{font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.5}
+  .chart-card-arrow{margin-left:auto;opacity:.4;font-size:14px}
+  .card-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 
-  .ext-links{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-  .ext-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);padding:6px 13px;border-radius:4px;text-decoration:none;transition:all .15s}
-  .ext-link:hover{border-color:var(--accent);color:var(--accent)}
-  .ext-link svg{width:11px;height:11px;flex-shrink:0}
+  /* No ticker */
+  .no-ticker-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text3);font-family:var(--mono);font-size:11px;margin-bottom:28px}
 
+  /* Tier info */
+  .tier-info{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent2);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:28px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8}
+
+  /* Modal */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center}
   .modal-overlay.open{display:flex}
   .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:28px;width:460px;max-width:92vw}
@@ -110,12 +121,12 @@
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="mtitle">// NEW_SECTOR</div>
-    <div class="mfield"><div class="mlabel">섹터명</div><input class="minput" id="ms-name" placeholder="예: Memory / Robotics"></div>
+    <div class="mfield"><div class="mlabel">섹터명</div><input class="minput" id="ms-name" placeholder="예: Memory / Robotics / Cooling"></div>
     <div class="mfield"><div class="mlabel">섹터 설명 (선택)</div><input class="minput" id="ms-desc" placeholder="한 줄 설명"></div>
     <div class="mfield">
       <div class="mlabel">종목 (한 줄에 하나 — 이름, 티어, 티커)</div>
       <textarea class="minput mta" id="ms-stocks" placeholder="SK Hynix, High, 000660.KS&#10;Micron, High, MU"></textarea>
-      <div class="mhint">티커 없으면 빈칸. 티어는 자유롭게 (High / Mid / Low / Early 등)</div>
+      <div class="mhint">티커 없으면 빈칸. 티어는 자유롭게</div>
     </div>
     <div class="mactions">
       <button class="btn-cancel" onclick="closeModal()">취소</button>
@@ -125,16 +136,63 @@
 </div>
 
 <script>
-const EXT_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>`;
-
-const TIER_COLORS = {'High':'#f5a623','High-Mid':'#e8883a','Mid':'#7c6af5','Mid-Low':'#4a9eff','Low':'#3ecf8e','Very Early':'#f04040','Early':'#e8883a','Early-Mid':'#f5a623','Mid Late':'#4a9eff','Mature':'#3ecf8e','default':'#888899'};
-const TIER_HINTS = {'Very Early':'초기 수혜','Early':'선행 수혜','Early-Mid':'중간 선행','Mid Late':'후행','Mature':'성숙기'};
+const TIER_COLORS = {
+  'High':'#f5a623','High-Mid':'#e8883a','Mid':'#7c6af5','Mid-Low':'#4a9eff','Low':'#3ecf8e',
+  'Very Early':'#f04040','Early':'#e8883a','Early-Mid':'#f5a623','Mid Late':'#4a9eff','Mature':'#3ecf8e',
+  'default':'#888899'
+};
+const TIER_HINTS = {
+  'Very Early':'초기 수혜','Early':'선행 수혜','Early-Mid':'중간 선행','Mid Late':'후행','Mature':'성숙기'
+};
 const SECTOR_TIER_ORDER = {
-  'Power':['High','High-Mid','Mid','Mid-Low','Low'],
-  'Optical':['Very Early','Early','Early-Mid','Mid','Mid Late','Mature'],
+  'Power':   ['High','High-Mid','Mid','Mid-Low','Low'],
+  'Optical': ['Very Early','Early','Early-Mid','Mid','Mid Late','Mature'],
   '_default':['High','High-Mid','Mid','Mid-Low','Low','Very Early','Early','Early-Mid','Mid Late','Mature']
 };
-const PERIODS = {d:'일봉', w:'주봉', m:'월봉'};
+
+// TradingView 티커 변환
+function tvTicker(t) {
+  if (!t) return null;
+  const map = {
+    '6981.T':'TSE:6981','6762.T':'TSE:6762','ABBN.SW':'SIX:ABBN',
+    'SU.PA':'EURONEXT:SU','2308.TW':'TWSE:2308',
+    '009150.KS':'KRX:009150','LGRDY':'EURONEXT:LR','IFNNY':'XETR:IFX'
+  };
+  return map[t] || t;
+}
+
+// 서비스별 URL 생성
+function getLinks(ticker) {
+  if (!ticker) return [];
+  const tv = tvTicker(ticker);
+  const sa = ticker.toLowerCase().replace(/\./g,'-');
+  return [
+    {
+      name:'TradingView',
+      desc:'실시간 차트 · 기술적 분석',
+      url:`https://www.tradingview.com/chart/?symbol=${tv}`,
+      color:'#2962ff'
+    },
+    {
+      name:'Stock Analysis',
+      desc:'재무제표 · 밸류에이션 · 배당',
+      url:`https://stockanalysis.com/stocks/${sa}/`,
+      color:'#7c6af5'
+    },
+    {
+      name:'Finviz',
+      desc:'스크리너 · 뉴스 · 인사이더',
+      url:`https://finviz.com/quote.ashx?t=${ticker}`,
+      color:'#3ecf8e'
+    },
+    {
+      name:'Seeking Alpha',
+      desc:'애널리스트 리포트 · 뉴스',
+      url:`https://seekingalpha.com/symbol/${ticker}`,
+      color:'#f5a623'
+    },
+  ];
+}
 
 let sectors = {
   'Power':{
@@ -174,17 +232,7 @@ let sectors = {
   }
 };
 
-let activeSector=null, activeStock=null, currentPeriod='d';
-
-// 미국 상장 티커 여부 (Finviz는 미국 종목만 지원)
-function isUSA(ticker) {
-  if (!ticker) return false;
-  return !/[.\-]/.test(ticker) && !/KS$|KQ$|TW$|PA$|SW$/.test(ticker);
-}
-
-function finvizUrl(ticker, p) {
-  return `https://finviz.com/chart.ashx?t=${ticker}&ty=c&ta=1&p=${p}`;
-}
+let activeSector=null, activeStock=null;
 
 // ── 사이드바 ──────────────────────────────────────────────────────────
 function renderSidebar() {
@@ -221,8 +269,9 @@ function renderSidebar() {
 
 function toggleSector(key) {
   activeSector = activeSector===key ? null : key;
-  if (activeSector) { activeStock=null; showEmpty(); }
+  activeStock = null;
   renderSidebar();
+  showEmpty();
 }
 
 function selectStock(sk, name, tier, ticker) {
@@ -231,10 +280,11 @@ function selectStock(sk, name, tier, ticker) {
   renderDetail();
 }
 
+// ── 빈 화면 ───────────────────────────────────────────────────────────
 function showEmpty() {
   const note = activeSector ? sectors[activeSector].note : null;
   document.getElementById('main').innerHTML = `<div class="empty-state">
-    ${note?`<div class="sector-note">${note}</div>`:'<div class="empty-icon">◈</div>'}
+    ${note?`<div class="sector-note">${note}</div>`:`<div class="empty-icon">◈</div>`}
     <div class="empty-hint">← 종목을 선택하세요</div>
   </div>`;
 }
@@ -242,30 +292,32 @@ function showEmpty() {
 // ── 상세 화면 ─────────────────────────────────────────────────────────
 function renderDetail() {
   const s = activeStock;
-  const usa = isUSA(s.ticker);
+  const tc = TIER_COLORS[s.tier]||TIER_COLORS.default;
+  const links = getLinks(s.ticker);
 
-  let chartHtml;
-  if (s.ticker && usa) {
-    const pbtns = Object.entries(PERIODS).map(([k,v])=>
-      `<button class="pbtn ${k===currentPeriod?'active':''}" onclick="changePeriod('${k}')">${v}</button>`
-    ).join('');
-    chartHtml = `<div class="chart-section">
-      <div class="chart-toolbar">${pbtns}<div class="tspc"></div><span class="csrc">Finviz</span></div>
-      <div class="chart-img-wrap">
-        <img id="chart-img" src="${finvizUrl(s.ticker,currentPeriod)}" alt="${s.name} chart"
-          onerror="this.outerHTML='<div class=cerr>차트를 불러오지 못했어요<br><small>Finviz에서 직접 확인하세요</small></div>'">
-      </div>
+  const linksHtml = s.ticker ? `
+    <div class="chart-links-label">차트 · 데이터 바로가기</div>
+    <div class="chart-grid">
+      ${links.map(l=>`
+        <a class="chart-card" href="${l.url}" target="_blank" rel="noopener">
+          <div class="chart-card-name">
+            <span class="card-dot" style="background:${l.color}"></span>
+            ${l.name}
+            <span class="chart-card-arrow">↗</span>
+          </div>
+          <div class="chart-card-desc">${l.desc}</div>
+        </a>`).join('')}
+    </div>` : `
+    <div class="no-ticker-box">
+      <span style="font-size:20px;opacity:.2">◌</span>
+      <span>티커 미등록 — 상장 전 또는 장외 종목</span>
     </div>`;
-  } else if (s.ticker && !usa) {
-    chartHtml = `<div class="no-chart"><span style="opacity:.25;font-size:18px">◌</span><span>해외 거래소 — Finviz 미지원 (${s.ticker})</span></div>`;
-  } else {
-    chartHtml = `<div class="no-chart"><span style="opacity:.25;font-size:18px">◌</span><span>티커 미등록 종목</span></div>`;
-  }
 
-  const links = s.ticker ? `<div class="ext-links">
-    <a class="ext-link" href="https://stockanalysis.com/stocks/${s.ticker.toLowerCase().replace(/\./g,'-')}/" target="_blank">${EXT_SVG} Stock Analysis</a>
-    ${usa?`<a class="ext-link" href="https://finviz.com/quote.ashx?t=${s.ticker}" target="_blank">${EXT_SVG} Finviz</a>`:''}
-  </div>` : '';
+  const tierNote = `<div class="tier-info">
+    <span style="color:${tc}">● ${s.tier}</span>
+    ${TIER_HINTS[s.tier] ? ` · ${TIER_HINTS[s.tier]}` : ''}
+    &nbsp;·&nbsp; ${s.sector}
+  </div>`;
 
   document.getElementById('main').innerHTML = `<div class="detail">
     <div class="dname">${s.name}</div>
@@ -274,20 +326,13 @@ function renderDetail() {
       <span class="badge bs">${s.tier}</span>
       <span class="badge bs" style="color:var(--text3)">${s.sector}</span>
     </div>
-    ${chartHtml}
-    ${links}
+    ${tierNote}
+    ${linksHtml}
   </div>`;
 }
 
-function changePeriod(p) {
-  currentPeriod = p;
-  document.querySelectorAll('.pbtn').forEach(b=>b.classList.toggle('active', b.textContent===PERIODS[p]));
-  const img = document.getElementById('chart-img');
-  if (img && activeStock?.ticker) img.src = finvizUrl(activeStock.ticker, p);
-}
-
-// ── 모달 ──────────────────────────────────────────────────────────────
-function openModal() { document.getElementById('modal').classList.add('open'); }
+// ── 섹터 추가 모달 ─────────────────────────────────────────────────────
+function openModal()  { document.getElementById('modal').classList.add('open'); }
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
   ['ms-name','ms-desc','ms-stocks'].forEach(id=>document.getElementById(id).value='');
@@ -300,9 +345,13 @@ function addSector() {
       const p=line.split(',').map(x=>x.trim());
       return {name:p[0]||'',tier:p[1]||'Mid',ticker:p[2]||null};
     }).filter(s=>s.name);
-  const key = name.replace(/\s+/g,'_');
-  sectors[key]={label:`AI · ${name}`,note:document.getElementById('ms-desc').value.trim(),stocks};
-  closeModal(); activeSector=key; activeStock=null;
+  sectors[name.replace(/\s+/g,'_')]={
+    label:`AI · ${name}`,
+    note:document.getElementById('ms-desc').value.trim(),
+    stocks
+  };
+  closeModal();
+  activeSector=name.replace(/\s+/g,'_'); activeStock=null;
   renderSidebar(); showEmpty();
 }
 
