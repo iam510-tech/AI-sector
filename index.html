@@ -442,10 +442,10 @@ const TIER_COLORS = {
   'Mid': '#7c6af5',
   'Mid-Low': '#4a9eff',
   'Low': '#3ecf8e',
-  'Very Early': '#f04040',
-  'Early': '#e8883a',
-  'Early-Mid': '#f5a623',
-  'Mid Late': '#4a9eff',
+  'Early': '#f04040',
+  'Very Early': '#cc2222',
+  'Early-Mid': '#e05050',
+  'Mid Late': '#6a9eff',
   'Mature': '#3ecf8e',
   'default': '#888899'
 };
@@ -524,23 +524,12 @@ function getTierColor(tier) {
   return TIER_COLORS[tier] || TIER_COLORS['default'];
 }
 
-const TIER_HINTS = {
-  'Very Early': '초기 수혜',
-  'Early':      '선행 수혜',
-  'Early-Mid':  '중간 선행',
-  'Mid Late':   '후행',
-  'Mature':     '성숙기',
-};
-  'Power':   ['High','High-Mid','Mid','Mid-Low','Low'],
-  'Optical': ['Very Early','Early','Early-Mid','Mid','Mid Late','Mature'],
-  '_default':['High','High-Mid','Mid','Mid-Low','Low','Very Early','Early','Early-Mid','Mid Late','Mature']
-};
-
 function renderSidebar() {
   const sb = document.getElementById('sidebar');
+  const tierOrder = ['High','High-Mid','Mid','Mid-Low','Low','Very Early','Early','Early-Mid','Mid Late','Mature'];
 
   sb.innerHTML = Object.entries(sectors).map(([key, sector]) => {
-    const tierOrder = SECTOR_TIER_ORDER[key] || SECTOR_TIER_ORDER['_default'];
+    const tickerCount = sector.stocks.filter(s => s.ticker).length;
     const tiers = {};
     sector.stocks.forEach(s => {
       if (!tiers[s.tier]) tiers[s.tier] = [];
@@ -564,7 +553,6 @@ function renderSidebar() {
           <div class="tier-label">
             <span class="tier-dot" style="background:${getTierColor(tier)}"></span>
             ${tier}
-            ${TIER_HINTS[tier] ? `<span style="color:var(--text3);font-size:9px;margin-left:4px">${TIER_HINTS[tier]}</span>` : ''}
           </div>
           ${tiers[tier].map(s => `
             <div class="stock-item ${activeStock && activeStock.ticker === s.ticker && activeStock.name === s.name ? 'active' : ''}"
@@ -665,6 +653,10 @@ function renderMain(stock) {
       <a class="ext-link" href="https://finance.yahoo.com/quote/${stock.ticker}/financials/" target="_blank">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
         재무제표
+      </a>
+      <a class="ext-link" href="https://finance.yahoo.com/quote/${stock.ticker}/news/" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+        뉴스
       </a>
       <a class="ext-link" href="https://stockanalysis.com/stocks/${stock.ticker.toLowerCase().replace('.','-')}/" target="_blank">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
