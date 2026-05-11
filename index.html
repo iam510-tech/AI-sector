@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Sector Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #1a1a24;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8e8f0;
+    --text2: #8888a0;
+    --text3: #555568;
+    --accent: #7c6af5;
+    --accent2: #5a4fd4;
+    --green: #3ecf8e;
+    --red: #f04040;
+    --amber: #f5a623;
+    --blue: #4a9eff;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans KR', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+  .header-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+  }
+  .header-sep { width: 1px; height: 20px; background: var(--border2); }
+  .header-title { font-size: 13px; color: var(--text2); font-family: var(--mono); }
+
+  /* Add sector button */
+  .btn-add-sector {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+  }
+  .btn-add-sector:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Layout */
+  .layout { display: flex; height: calc(100vh - 53px); }
+
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--bg3) transparent;
+  }
+  .sector-group { border-bottom: 1px solid var(--border); }
+  .sector-header {
+    padding: 12px 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--text3);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s;
+  }
+  .sector-header:hover { color: var(--text2); }
+  .sector-header .sector-count {
+    font-size: 10px;
+    color: var(--text3);
+    background: var(--bg3);
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+  .sector-header.active-sector { color: var(--accent); }
+  .sector-header.active-sector .sector-count { color: var(--accent); background: rgba(124,106,245,0.15); }
+
+  .tier-group {}
+  .tier-label {
+    padding: 8px 16px 4px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tier-dot { width: 5px; height: 5px; border-radius: 50%; }
+
+  .stock-item {
+    padding: 7px 16px 7px 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.1s;
+    border-left: 2px solid transparent;
+  }
+  .stock-item:hover { background: var(--bg3); }
+  .stock-item.active {
+    background: rgba(124,106,245,0.1);
+    border-left-color: var(--accent);
+  }
+  .stock-name { font-size: 13px; color: var(--text); }
+  .stock-ticker { font-family: var(--mono); font-size: 10px; color: var(--text3); }
+  .stock-no-ticker { font-size: 9px; color: var(--text3); font-style: italic; }
+
+  /* Main panel */
+  .main {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--bg3) transparent;
+  }
+
+  /* Empty state */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 12px;
+    color: var(--text3);
+  }
+  .empty-icon { font-size: 32px; opacity: 0.3; }
+  .empty-text { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; }
+
+  /* Stock detail */
+  .stock-detail { padding: 28px 32px; }
+  .detail-header { margin-bottom: 24px; }
+  .detail-name {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .detail-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .detail-ticker {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    background: rgba(124,106,245,0.12);
+    padding: 3px 10px;
+    border-radius: 3px;
+  }
+  .detail-tier {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+  .detail-sector {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  /* Chart area */
+  .chart-container {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative;
+  }
+  .chart-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .period-btn {
+    background: transparent;
+    border: none;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.12s;
+    letter-spacing: 0.03em;
+  }
+  .period-btn:hover { color: var(--text2); background: var(--bg3); }
+  .period-btn.active { color: var(--accent); background: rgba(124,106,245,0.15); }
+  .chart-sep { flex: 1; }
+  .chart-source { font-family: var(--mono); font-size: 9px; color: var(--text3); }
+
+  .chart-iframe-wrap {
+    width: 100%;
+    height: 380px;
+    background: var(--bg2);
+  }
+  .chart-iframe-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* No ticker notice */
+  .no-ticker-notice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  /* Stats grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .stat-value.loading {
+    color: var(--text3);
+    font-size: 13px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .stat-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; }
+  .pos { color: var(--green); }
+  .neg { color: var(--red); }
+
+  /* Links */
+  .ext-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .ext-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.15s;
+    letter-spacing: 0.03em;
+  }
+  .ext-link:hover { border-color: var(--accent); color: var(--accent); }
+  .ext-link svg { width: 12px; height: 12px; opacity: 0.7; }
+
+  /* Sector note */
+  .sector-note {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .sector-note strong { color: var(--accent); }
+
+  /* Add sector modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 28px;
+    width: 480px;
+    max-width: 90vw;
+  }
+  .modal-title { font-family: var(--mono); font-size: 13px; color: var(--text); margin-bottom: 20px; letter-spacing: 0.06em; }
+  .modal-field { margin-bottom: 14px; }
+  .modal-label { font-family: var(--mono); font-size: 10px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+  .modal-input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 9px 12px;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .modal-input:focus { border-color: var(--accent); }
+  .modal-textarea { height: 80px; resize: vertical; }
+  .modal-hint { font-size: 10px; color: var(--text3); margin-top: 4px; font-family: var(--mono); }
+  .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+  .btn-cancel {
+    background: transparent; border: 1px solid var(--border2); color: var(--text2);
+    font-family: var(--mono); font-size: 11px; padding: 8px 16px; border-radius: 4px; cursor: pointer;
+  }
+  .btn-confirm {
+    background: var(--accent2); border: none; color: white;
+    font-family: var(--mono); font-size: 11px; padding: 8px 16px; border-radius: 4px; cursor: pointer;
+  }
+  .btn-confirm:hover { background: var(--accent); }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-logo">AI SECTOR TRACKER</span>
+  <div class="header-sep"></div>
+  <span class="header-title">전력 인프라 / 광학·통신 섹터</span>
+  <button class="btn-add-sector" onclick="openModal()">+ 섹터 추가</button>
+</div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main" id="main">
+    <div class="empty-state">
+      <div class="empty-icon">◈</div>
+      <div class="empty-text">← 종목을 선택하세요</div>
+    </div>
+  </main>
+</div>
+
+<!-- Add sector modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title">// NEW_SECTOR</div>
+    <div class="modal-field">
+      <div class="modal-label">섹터명</div>
+      <input class="modal-input" id="new-sector-name" placeholder="예: AI Infra / Memory / Robotics">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">섹터 설명 (선택)</div>
+      <input class="modal-input" id="new-sector-desc" placeholder="예: HBM / DRAM AI 수혜 종목">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">종목 입력 (한 줄에 하나씩)</div>
+      <textarea class="modal-input modal-textarea" id="new-sector-stocks" placeholder="종목명, 티어, 티커
+예시:
+Samsung Elec, Mid, 005930.KS
+SK Hynix, High, 000660.KS
+Micron, High, MU"></textarea>
+      <div class="modal-hint">티커가 없으면 빈칸으로 두세요</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-confirm" onclick="addSector()">추가</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TIER_COLORS = {
+  'High': '#f5a623',
+  'High-Mid': '#e8883a',
+  'Mid': '#7c6af5',
+  'Mid-Low': '#4a9eff',
+  'Low': '#3ecf8e',
+  'Very Early': '#f04040',
+  'Early': '#e8883a',
+  'Early-Mid': '#f5a623',
+  'Mid Late': '#4a9eff',
+  'Mature': '#3ecf8e',
+  'default': '#888899'
+};
+
+const SECTOR_NOTES = {
+  'Power': '800V → 48V → 0.8V → μV 전압 강하 체인. Vera Rubin 세대 전환(2025~2026)이 핵심 카탈리스트. <strong>High</strong> 티어(발전·송전)가 선행하고, 이후 <strong>Mid</strong>(랙·쿨링), <strong>Low</strong>(PMIC·GaN)으로 파급.',
+  'Optical': '800G→1.6T 속도 전환과 CPO(Co-packaged Optics) 채택이 핵심 드라이버. <strong>Early</strong> 단계 종목은 기술 검증 중, <strong>Mid</strong> 단계는 수주 가시성 확보 시점.'
+};
+
+let sectors = {
+  'Power': {
+    label: 'AI · Power',
+    note: SECTOR_NOTES['Power'],
+    stocks: [
+      { name: 'GE Vernova',    tier: 'High',     ticker: 'GEV' },
+      { name: 'Bloom Energy',  tier: 'High',     ticker: 'BE' },
+      { name: 'Constellation', tier: 'High',     ticker: 'CEG' },
+      { name: 'Vistra',        tier: 'High',     ticker: 'VST' },
+      { name: 'Quanta',        tier: 'High',     ticker: 'PWR' },
+      { name: 'Talen',         tier: 'High',     ticker: 'TLN' },
+      { name: 'Powell',        tier: 'High',     ticker: 'POWL' },
+      { name: 'Eaton',         tier: 'High-Mid', ticker: 'ETN' },
+      { name: 'ABB',           tier: 'High-Mid', ticker: 'ABBN.SW' },
+      { name: 'Vertiv',        tier: 'Mid',      ticker: 'VRT' },
+      { name: 'Schneider',     tier: 'Mid',      ticker: 'SU.PA' },
+      { name: 'nVent',         tier: 'Mid',      ticker: 'NVT' },
+      { name: 'Delta',         tier: 'Mid',      ticker: '2308.TW' },
+      { name: 'Legrand',       tier: 'Mid-Low',  ticker: 'LGRDY' },
+      { name: 'AEIS',          tier: 'Mid-Low',  ticker: 'AEIS' },
+      { name: 'MPS',           tier: 'Low',      ticker: 'MPWR' },
+      { name: 'Vicor',         tier: 'Low',      ticker: 'VICR' },
+      { name: 'Infineon',      tier: 'Low',      ticker: 'IFNNY' },
+      { name: 'STM',           tier: 'Low',      ticker: 'STM' },
+      { name: 'Murata',        tier: 'Low',      ticker: '6981.T' },
+      { name: 'TDK',           tier: 'Low',      ticker: '6762.T' },
+      { name: 'Amphenol',      tier: 'Low',      ticker: 'APH' },
+      { name: 'Navitas',       tier: 'Low',      ticker: 'NVTS' },
+      { name: '삼성전기',         tier: 'Low',      ticker: '009150.KS' },
+    ]
+  },
+  'Optical': {
+    label: 'AI · Optical',
+    note: SECTOR_NOTES['Optical'],
+    stocks: [
+      { name: 'Marvell',       tier: 'Early',      ticker: 'MRVL' },
+      { name: 'AAOI',          tier: 'Early',      ticker: 'AAOI' },
+      { name: 'Innolight',     tier: 'Early',      ticker: null },
+      { name: 'Eoptolink',     tier: 'Early',      ticker: null },
+      { name: 'Yuanjie',       tier: 'Early',      ticker: null },
+      { name: 'nLIGHT',        tier: 'Early',      ticker: null },
+      { name: 'Ciena',         tier: 'Early',      ticker: 'CIEN' },
+      { name: 'Astera Labs',   tier: 'Early',      ticker: 'ALAB' },
+      { name: 'Semtech',       tier: 'Early',      ticker: 'SMTC' },
+      { name: 'Lumentum',      tier: 'Early-Mid',  ticker: 'LITE' },
+      { name: 'Coherent',      tier: 'Early-Mid',  ticker: 'COHR' },
+      { name: 'Credo',         tier: 'Early-Mid',  ticker: 'CRDO' },
+      { name: 'Sivers',        tier: 'Early-Mid',  ticker: null },
+      { name: 'Cisco',         tier: 'Mid',        ticker: 'CSCO' },
+      { name: 'Nokia',         tier: 'Mid',        ticker: 'NOK' },
+      { name: 'Sumimoto',      tier: 'Mid',        ticker: null },
+      { name: 'MACOM',         tier: 'Mid Late',   ticker: null },
+      { name: 'LWLG',          tier: 'Very Early', ticker: 'LWLG' },
+      { name: 'QCi',           tier: 'Very Early', ticker: null },
+      { name: 'Aeluma',        tier: 'Very Early', ticker: 'ALMU' },
+      { name: 'POET',          tier: 'Very Early', ticker: 'POET' },
+      { name: 'IPG Photonics', tier: 'Mature',     ticker: null },
+    ]
+  }
+};
+
+let activeSector = null;
+let activeStock = null;
+let currentPeriod = '6mo';
+
+function getTierColor(tier) {
+  return TIER_COLORS[tier] || TIER_COLORS['default'];
+}
+
+const TIER_HINTS = {
+  'Very Early': '초기 수혜',
+  'Early':      '선행 수혜',
+  'Early-Mid':  '중간 선행',
+  'Mid Late':   '후행',
+  'Mature':     '성숙기',
+};
+  'Power':   ['High','High-Mid','Mid','Mid-Low','Low'],
+  'Optical': ['Very Early','Early','Early-Mid','Mid','Mid Late','Mature'],
+  '_default':['High','High-Mid','Mid','Mid-Low','Low','Very Early','Early','Early-Mid','Mid Late','Mature']
+};
+
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+
+  sb.innerHTML = Object.entries(sectors).map(([key, sector]) => {
+    const tierOrder = SECTOR_TIER_ORDER[key] || SECTOR_TIER_ORDER['_default'];
+    const tiers = {};
+    sector.stocks.forEach(s => {
+      if (!tiers[s.tier]) tiers[s.tier] = [];
+      tiers[s.tier].push(s);
+    });
+
+    const sortedTiers = Object.keys(tiers).sort((a,b) => {
+      const ai = tierOrder.indexOf(a), bi = tierOrder.indexOf(b);
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    });
+
+    const isActive = activeSector === key;
+
+    return `<div class="sector-group">
+      <div class="sector-header ${isActive ? 'active-sector' : ''}" onclick="selectSector('${key}')">
+        <span>${sector.label}</span>
+        <span class="sector-count">${sector.stocks.length}</span>
+      </div>
+      ${isActive ? sortedTiers.map(tier => `
+        <div class="tier-group">
+          <div class="tier-label">
+            <span class="tier-dot" style="background:${getTierColor(tier)}"></span>
+            ${tier}
+            ${TIER_HINTS[tier] ? `<span style="color:var(--text3);font-size:9px;margin-left:4px">${TIER_HINTS[tier]}</span>` : ''}
+          </div>
+          ${tiers[tier].map(s => `
+            <div class="stock-item ${activeStock && activeStock.ticker === s.ticker && activeStock.name === s.name ? 'active' : ''}"
+                 onclick="selectStock('${key}','${s.name}','${s.tier}','${s.ticker || ''}')">
+              <span class="stock-name">${s.name}</span>
+              ${s.ticker
+                ? `<span class="stock-ticker">${s.ticker}</span>`
+                : `<span class="stock-no-ticker">비상장</span>`}
+            </div>
+          `).join('')}
+        </div>
+      `).join('') : ''}
+    </div>`;
+  }).join('');
+}
+
+function selectSector(key) {
+  if (activeSector === key) {
+    activeSector = null;
+  } else {
+    activeSector = key;
+    activeStock = null;
+    renderMain(null);
+  }
+  renderSidebar();
+}
+
+function selectStock(sectorKey, name, tier, ticker) {
+  activeStock = { name, tier, ticker: ticker || null, sector: sectors[sectorKey].label };
+  renderSidebar();
+  renderMain(activeStock);
+}
+
+function getYahooChartUrl(ticker, period) {
+  return `https://finance.yahoo.com/chart/${ticker}?period=${period}`;
+}
+
+function getPeriodLabel(p) {
+  const map = { '1mo':'1M', '3mo':'3M', '6mo':'6M', '1y':'1Y', '2y':'2Y', '5y':'5Y' };
+  return map[p] || p;
+}
+
+function renderMain(stock) {
+  const main = document.getElementById('main');
+  if (!stock) {
+    const note = activeSector ? sectors[activeSector].note : null;
+    main.innerHTML = `<div class="empty-state">
+      ${note ? `<div style="max-width:500px;text-align:left;background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:16px 20px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8;">${note}</div>` : ''}
+      <div class="empty-text" style="margin-top:${note?'16px':'0'}">← 종목을 선택하세요</div>
+    </div>`;
+    return;
+  }
+
+  const periods = ['1mo','3mo','6mo','1y','2y','5y'];
+
+  const statsHtml = stock.ticker ? `
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><div class="stat-label">Current Price</div><div class="stat-value loading" id="s-price">loading...</div></div>
+      <div class="stat-card"><div class="stat-label">Change (1D)</div><div class="stat-value loading" id="s-change">loading...</div></div>
+      <div class="stat-card"><div class="stat-label">Market Cap</div><div class="stat-value loading" id="s-mktcap">loading...</div></div>
+      <div class="stat-card"><div class="stat-label">P/E Ratio</div><div class="stat-value loading" id="s-pe">loading...</div></div>
+      <div class="stat-card"><div class="stat-label">52W High</div><div class="stat-value loading" id="s-high">loading...</div></div>
+      <div class="stat-card"><div class="stat-label">52W Low</div><div class="stat-value loading" id="s-low">loading...</div></div>
+    </div>` : '';
+
+  const chartHtml = stock.ticker ? `
+    <div class="chart-container">
+      <div class="chart-toolbar">
+        ${periods.map(p => `
+          <button class="period-btn ${p === currentPeriod ? 'active' : ''}"
+                  onclick="changePeriod('${p}')">${getPeriodLabel(p)}</button>
+        `).join('')}
+        <div class="chart-sep"></div>
+        <span class="chart-source">Yahoo Finance</span>
+      </div>
+      <div class="chart-iframe-wrap">
+        <iframe id="chart-iframe"
+          src="${getYahooChartUrl(stock.ticker, currentPeriod)}"
+          loading="lazy"
+          sandbox="allow-scripts allow-same-origin allow-forms"
+          title="${stock.name} chart">
+        </iframe>
+      </div>
+    </div>` : `
+    <div class="chart-container">
+      <div class="no-ticker-notice">
+        <span style="font-size:20px;opacity:0.3">◌</span>
+        <span>티커 미등록 — 상장 전 또는 OTC 종목</span>
+      </div>
+    </div>`;
+
+  const linksHtml = stock.ticker ? `
+    <div class="ext-links">
+      <a class="ext-link" href="https://finance.yahoo.com/quote/${stock.ticker}" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+        Yahoo Finance
+      </a>
+      <a class="ext-link" href="https://finance.yahoo.com/quote/${stock.ticker}/financials/" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+        재무제표
+      </a>
+      <a class="ext-link" href="https://stockanalysis.com/stocks/${stock.ticker.toLowerCase().replace('.','-')}/" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+        Stock Analysis
+      </a>
+    </div>` : '';
+
+  main.innerHTML = `
+    <div class="stock-detail">
+      <div class="detail-header">
+        <div class="detail-name">${stock.name}</div>
+        <div class="detail-meta">
+          ${stock.ticker ? `<span class="detail-ticker">${stock.ticker}</span>` : `<span class="detail-tier" style="color:var(--text3);font-style:italic">티커 없음</span>`}
+          <span class="detail-tier">${stock.tier}</span>
+          <span class="detail-sector">${stock.sector}</span>
+        </div>
+      </div>
+      ${statsHtml}
+      ${chartHtml}
+      ${linksHtml}
+    </div>`;
+
+  if (stock.ticker) {
+    fetchStats(stock.ticker);
+  }
+}
+
+function changePeriod(p) {
+  currentPeriod = p;
+  if (!activeStock || !activeStock.ticker) return;
+  document.querySelectorAll('.period-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === getPeriodLabel(p));
+  });
+  const iframe = document.getElementById('chart-iframe');
+  if (iframe) iframe.src = getYahooChartUrl(activeStock.ticker, p);
+}
+
+async function fetchStats(ticker) {
+  const proxy = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`;
+  const summaryProxy = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=price,summaryDetail,defaultKeyStatistics`;
+
+  try {
+    const res = await fetch(`https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=price,summaryDetail`);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    const price = data.quoteSummary?.result?.[0]?.price;
+    const summary = data.quoteSummary?.result?.[0]?.summaryDetail;
+
+    if (!price) throw new Error();
+
+    const cur = price.regularMarketPrice?.raw;
+    const change = price.regularMarketChangePercent?.raw;
+    const mktcap = price.marketCap?.raw;
+    const pe = summary?.trailingPE?.raw;
+    const high52 = summary?.fiftyTwoWeekHigh?.raw;
+    const low52 = summary?.fiftyTwoWeekLow?.raw;
+    const currency = price.currency || '';
+
+    const fmt = (n, digits=2) => n != null ? n.toFixed(digits) : '—';
+    const fmtMkt = (n) => {
+      if (!n) return '—';
+      if (n >= 1e12) return (n/1e12).toFixed(2) + 'T';
+      if (n >= 1e9) return (n/1e9).toFixed(1) + 'B';
+      if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
+      return n.toString();
+    };
+
+    const setEl = (id, html, cls='') => {
+      const el = document.getElementById(id);
+      if (el) { el.innerHTML = html; el.className = `stat-value ${cls}`; }
+    };
+
+    setEl('s-price', cur != null ? `${fmt(cur)} <span style="font-size:11px;color:var(--text3)">${currency}</span>` : '—');
+    if (change != null) {
+      const pct = (change * 100).toFixed(2);
+      const cls = change >= 0 ? 'pos' : 'neg';
+      const sign = change >= 0 ? '+' : '';
+      setEl('s-change', `${sign}${pct}%`, cls);
+    } else setEl('s-change', '—');
+    setEl('s-mktcap', fmtMkt(mktcap));
+    setEl('s-pe', pe != null ? fmt(pe, 1) + 'x' : '—');
+    setEl('s-high', high52 != null ? fmt(high52) : '—');
+    setEl('s-low', low52 != null ? fmt(low52) : '—');
+
+  } catch(e) {
+    ['s-price','s-change','s-mktcap','s-pe','s-high','s-low'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = '—'; el.className = 'stat-value'; el.style.color = 'var(--text3)'; }
+    });
+  }
+}
+
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('new-sector-name').value = '';
+  document.getElementById('new-sector-desc').value = '';
+  document.getElementById('new-sector-stocks').value = '';
+}
+
+function addSector() {
+  const name = document.getElementById('new-sector-name').value.trim();
+  if (!name) return;
+  const desc = document.getElementById('new-sector-desc').value.trim();
+  const raw = document.getElementById('new-sector-stocks').value.trim();
+  const stocks = raw.split('\n').filter(l => l.trim()).map(line => {
+    const parts = line.split(',').map(s => s.trim());
+    return { name: parts[0] || '', tier: parts[1] || 'Mid', ticker: parts[2] || null };
+  }).filter(s => s.name);
+
+  const key = name.replace(/\s+/g, '_');
+  sectors[key] = { label: `AI · ${name}`, note: desc, stocks };
+  closeModal();
+  activeSector = key;
+  activeStock = null;
+  renderSidebar();
+  renderMain(null);
+}
+
+// Init
+activeSector = 'Power';
+renderSidebar();
+renderMain(null);
+</script>
+</body>
+</html>
