@@ -465,47 +465,86 @@ function renderMain(stock) {
 }
 
 // ── TradingView 위젯 ───────────────────────────────────────────────────
+function makeTVWidget(containerId, config) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+
+  // TradingView 공식 방식: div.tradingview-widget-container > div + script
+  const wrap = document.createElement('div');
+  wrap.className = 'tradingview-widget-container';
+  wrap.style.cssText = 'width:100%;height:100%';
+
+  const inner = document.createElement('div');
+  inner.className = 'tradingview-widget-container__widget';
+  inner.style.cssText = 'width:100%;height:100%';
+  wrap.appendChild(inner);
+
+  const cfg = document.createElement('script');
+  cfg.type = 'text/javascript';
+  cfg.src = 'https://s3.tradingview.com/external-embedding/' + config.widgetSrc;
+  cfg.async = true;
+
+  // config를 JSON으로 직렬화해서 별도 script 태그에 담음
+  const cfgScript = document.createElement('script');
+  cfgScript.type = 'text/javascript';
+  cfgScript.textContent = 'window.__TV_CONFIG_' + containerId + ' = ' + JSON.stringify(config.params) + ';';
+  document.head.appendChild(cfgScript);
+
+  // TradingView는 바로 앞 script 태그의 innerHTML을 읽으므로
+  // textContent 방식 대신 iframe URL 방식 사용
+  const iframeUrl = buildTVIframeUrl(config);
+  const iframe = document.createElement('iframe');
+  iframe.src = iframeUrl;
+  iframe.style.cssText = 'width:100%;height:100%;border:none;display:block';
+  iframe.setAttribute('allowtransparency', 'true');
+  iframe.setAttribute('scrolling', 'no');
+  container.appendChild(iframe);
+}
+
+function buildTVIframeUrl(config) {
+  const p = config.params;
+  if (config.type === 'info') {
+    return `https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.html#${encodeURIComponent(JSON.stringify(p))}`;
+  }
+  // advanced chart
+  return `https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.html#${encodeURIComponent(JSON.stringify(p))}`;
+}
+
 function loadTVChart(tvTicker) {
-  // 심볼 정보 위젯 (가격, 시총, PER 등)
-  const infoContainer = document.getElementById('tv-symbol-info');
-  if (infoContainer) {
-    infoContainer.innerHTML = '';
-    const s1 = document.createElement('script');
-    s1.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js';
-    s1.async = true;
-    s1.innerHTML = JSON.stringify({
+  // 심볼 정보 위젯
+  makeTVWidget('tv-symbol-info', {
+    type: 'info',
+    widgetSrc: 'embed-widget-symbol-info.js',
+    params: {
       symbol: tvTicker,
       width: '100%',
       locale: 'kr',
       colorTheme: 'dark',
       isTransparent: false,
-    });
-    infoContainer.appendChild(s1);
-  }
+    }
+  });
 
   // 차트 위젯
-  const container = document.getElementById('tv-chart');
-  if (!container) return;
-  container.innerHTML = '';
-  const script = document.createElement('script');
-  script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
-  script.async = true;
-  script.innerHTML = JSON.stringify({
-    autosize: true,
-    symbol: tvTicker,
-    interval: 'D',
-    timezone: 'Asia/Seoul',
-    theme: 'dark',
-    style: '1',
-    locale: 'kr',
-    range: TV_PERIOD_MAP[currentPeriod] || '6M',
-    hide_top_toolbar: false,
-    hide_legend: false,
-    save_image: false,
-    backgroundColor: 'rgba(17,17,24,1)',
-    gridColor: 'rgba(255,255,255,0.04)',
+  makeTVWidget('tv-chart', {
+    type: 'chart',
+    widgetSrc: 'embed-widget-advanced-chart.js',
+    params: {
+      autosize: true,
+      symbol: tvTicker,
+      interval: 'D',
+      timezone: 'Asia/Seoul',
+      theme: 'dark',
+      style: '1',
+      locale: 'kr',
+      range: TV_PERIOD_MAP[currentPeriod] || '6M',
+      hide_top_toolbar: false,
+      hide_legend: false,
+      save_image: false,
+      backgroundColor: 'rgba(17,17,24,1)',
+      gridColor: 'rgba(255,255,255,0.04)',
+    }
   });
-  container.appendChild(script);
 }
 
 function changePeriod(p) {
